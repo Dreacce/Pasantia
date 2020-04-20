@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -18,7 +17,7 @@ import com.mysql.jdbc.PreparedStatement;
 
 public class Principal {
 
-	private JFrame frame;
+	JFrame frame;
 	private JTable table;
 	Acciones ac=new Acciones();
 
@@ -52,7 +51,7 @@ public class Principal {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 823, 520);
+		frame.setSize(1650,1080);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -61,14 +60,19 @@ public class Principal {
 		frame.getContentPane().add(lblNewLabel);
 		
 		JButton btnNewButton = new JButton("Nuevo ");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//redireccionamos a un formulario para registrar al nuevo cliente
+				secundario nue=new secundario();
+				nue.frame.setVisible(true);
+			}
+		});
 		btnNewButton.setBounds(43, 79, 89, 23);
 		frame.getContentPane().add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Importar");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				ac.conectardb();
 			}
 		});
 		btnNewButton_1.setBounds(43, 135, 89, 23);
@@ -87,7 +91,7 @@ public class Principal {
 			new Object[][] {
 			},
 			new String[] {
-				"Cliente", "C.I", "Tel\u00E8fono", "Saldo", "Saldado"
+				"Cliente", "C.I", "Tel\u00E8fono", "Saldo", "Saldado", "Acciones"
 			}
 		));
 		table.getColumnModel().getColumn(0).setPreferredWidth(258);
@@ -102,7 +106,7 @@ public class Principal {
 			ps=(PreparedStatement) con.prepareStatement("SELECT * FROM datoscliente");
 			res=ps.executeQuery();
 			
-			if(res.next()) {
+			while(res.next()) {
 				int numCols = table.getModel().getColumnCount();
 
 				Object [] fila = new Object[numCols]; 
@@ -113,8 +117,6 @@ public class Principal {
 				 fila[3] = res.getInt("saldo");
 				 fila[4] = res.getInt("saldado");
 				 ((DefaultTableModel) table.getModel()).addRow(fila);
-			}else {
-				JOptionPane.showMessageDialog(null, "No existe");
 			}
 			con.close();
 		}catch(Exception e){
